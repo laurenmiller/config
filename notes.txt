@@ -1,0 +1,34 @@
+init git:
+TO INITIALIZE:
+
+cd ~/configs:
+git init
+
+
+add files:
+git add makesymlinks.sh
+
+commit (local):
+git commit -m 'My first Git commit of my dotfiles'
+
+tell repository where to upload to github (only once):
+git remote add origin git@github.com:mygithubusername/dotfiles.git
+
+git push origin master
+
+TO UPDATE (origin):
+add file: git add vimrc
+commit locally: git commit -m 'Changed vim colorscheme!'
+push to github: git push origin master
+
+TO CLONE ON ANOTHER MACHINE:
+clone repositiory:
+git clone git://github.com/<mygithubusername>/dotfiles.git
+
+make:
+cd ~/dotfiles
+chmod +x makesymlinks.sh
+./makesymlinks.sh
+
+TO UPDATE ON OTHER MACHINE:
+git pull origin master
