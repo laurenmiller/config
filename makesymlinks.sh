@@ -7,7 +7,7 @@
 ########## Variables
 
 dir=~/configs                    # dotfiles directory
-files=".bash_profile .emacs .gitignore_global"    # list of files/folders to symlink in homedir
+files=".bashrc .emacs .gitignore_global"    # list of files/folders to symlink in homedir
 olddir=~/configs_old             # old dotfiles backup directory
 ##########
 
