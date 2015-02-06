@@ -38,28 +38,30 @@
 ;;==================================================================
 ;; GUI Emacs config (make things work nicely)
 ;; =================================================================
-;; Prevent Emacs from create backup files with a tilde
-(setq make-backup-files nil)
 
+(setq
+ ;; Prevent Emacs from create backup files with a tilde
+ make-backup-files nil
 ;; Turn off splash screen
 ;; Turn off the message in the scratch buffer
-;; set default mode to org-mode
-(setq inhibit-splash-screen t
-      initial-scratch-message nil
-      initial-major-mode 'org-mode)
+ ;; set default mode to org-mode inhibit-splash-screen t
+ initial-scratch-message nil
+ initial-major-mode 'org-mode)
 
-                                        ; Turn off toolbar, menu, scroll bar
+(setq inhibit-startup-message t) 
+
+;;Turn off toolbar, menu, scroll bar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-;(scroll-bar-mode -1)
+;;(scroll-bar-mode -1)
 
-;;turn of dialog box
-(setq use-dialog-box nil)
-
+(setq
+ ;;turn of dialog box
+ use-dialog-box nil
 ;; Turn off beep
-(setq ring-bell-function 'ignore)
-(setq echo-keystrokes 0.1
-      use-dialog-box nil)
+ring-bell-function 'ignore
+echo-keystrokes 0.1
+use-dialog-box nil)
 
 ;; Turn on transient and delete selection mode
 (transient-mark-mode)
@@ -73,10 +75,17 @@
 
 ;; Add line numbering
 (require 'linum)
+(global-linum-mode t)
 (setq column-number-mode t)
+
+;; turn on auto fill in all lmodes
+(setq auto-fill-mode 1)
+;; set the fill column
+(setq-default fill-column 72)
 
 ;; Turn on window saving mode for restoring window configs:
 (winner-mode 1)
+
 
 ;; Set Smooth Scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
@@ -84,12 +93,21 @@
 
 ;; Enable mouse support
 
-                                        ;a minor tweak to the frame title, so it prints the path
+;;a minor tweak to the frame title, so it prints
+;the path
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
 
-                                        ; tell emacs not to as for yes
+; tell emacs not to as for yes
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+;get normal apple key bindings to work
+ ;(require 'redo)
+ ;(require 'mac-key-mode)
+  ;(mac-key-mode 1)
+
+  ;; follow symlinks and don't ask
+(setq  vc-follow-symlinks t)
 
 ;;other keybindings
 (global-set-key (kbd "C-=") 'text-scale-increase)
@@ -159,7 +177,8 @@
 
 
 ;; fonts
-(set-face-attribute 'default nil :height 100)
+
+(set-face-attribute 'default nil :height 120)
 (set-face-attribute 'default nil :font "Monaco")
 
 ;(load-theme 'wombat t)
@@ -173,6 +192,7 @@
              (file-name-as-directory "~/.emacs.d/themes/monokai-theme-20141106.2250"))
 
 (load-theme 'monokai t t)
+(enable-theme 'monokai)
 
 ;; load your favorite theme
 ;(load-theme 'charcoal-black t t)
@@ -243,14 +263,54 @@
                                         ;(add-hook 'latex-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (setq reftex-plug-into-auctex t)
+(setq reftex-ref-macro-prompt nil)
 
 ;;Minor Mode
-(defun turn-on-outline-minor-mode ()
-  (outline-minor-mode 1))
+(add-hook 'LaTeX-mode-hook 'outline-minor-mode)
 
-(add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
-(add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
-(setq outline-minor-mode-prefix "\C-c \C-o");
+
+; Outline-minor-mode key map
+ (define-prefix-command 'cm-map nil "Outline-")
+ ; HIDE
+ (define-key cm-map "q" 'hide-sublevels)    ; Hide everything but the top-level headings
+ (define-key cm-map "t" 'hide-body)         ; Hide everything but headings (all body lines)
+ (define-key cm-map "o" 'hide-other)        ; Hide other branches
+ (define-key cm-map "c" 'hide-entry)        ; Hide this entry's body
+ (define-key cm-map "l" 'hide-leaves)       ; Hide body lines in this entry and sub-entries
+ (define-key cm-map "d" 'hide-subtree)      ; Hide everything in this entry and sub-entries
+ ; SHOW
+ (define-key cm-map "a" 'show-all)          ; Show (expand) everything
+ (define-key cm-map "e" 'show-entry)        ; Show this heading's body
+ (define-key cm-map "i" 'show-children)     ; Show this heading's immediate child sub-headings
+ (define-key cm-map "k" 'show-branches)     ; Show all sub-headings under this heading
+ (define-key cm-map "s" 'show-subtree)      ; Show (expand) everything in this heading & below
+ ; MOVE
+ (define-key cm-map "u" 'outline-up-heading)                ; Up
+ (define-key cm-map "n" 'outline-next-visible-heading)      ; Next
+ (define-key cm-map "p" 'outline-previous-visible-heading)  ; Previous
+ (define-key cm-map "f" 'outline-forward-same-level)        ; Forward - same level
+ (define-key cm-map "b" 'outline-backward-same-level)       ; Backward - same level
+ (global-set-key "\M-o" cm-map)
+;;(add-hook 'LaTeX-mode-hook 'turn-on-outline-minor-mode)
+;;(add-hook 'latex-mode-hook 'turn-on-outline-minor-mode)
+;;(setq outline-minor-mode-prefix "\C-c \C-o");
+
+;; Tex folding. turn on automatically, and automatically call fold command shen $ or } are typed to see if there's anything to fold
+;; (add-hook 'LaTeX-mode-hook 
+;;       (lambda () 
+;;         (TeX-fold-mode 1)
+;;         (add-hook 'find-file-hook 'TeX-fold-buffer t t)
+;;         (add-hook 'after-change-functions 
+;;               (lambda (start end oldlen) 
+;;                 (when (= (- end start) 1)
+;;                   (let ((char-point 
+;;                                  (buffer-substring-no-properties 
+;;                                   start end)))
+;;                    (when (or (string= char-point "}")
+;;                          (string= char-point "$"))
+;;                     (TeX-fold-paragraph)))))
+;; 	      t t)))
+
 
 
 (add-hook 'LaTeX-mode-hook
@@ -301,7 +361,45 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-command-list (quote (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (plain-tex-mode texinfo-mode ams-tex-mode) :help "Run plain TeX") ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX") ("Makeinfo" "makeinfo %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with Info output") ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with HTML output") ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX") ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt once") ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt until completion") ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX") ("View" "open -a /Applications/Skim.app %s.pdf" TeX-run-discard-or-function t t :help "Run Viewer") ("Print" "%p" TeX-run-command t t :help "Print the file") ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command) ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file") ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file") ("Check" "lacheck %s" TeX-run-compile nil (latex-mode) :help "Check LaTeX file for correctness") ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document") ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files") ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files") ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
+ '(TeX-command-list
+   (quote
+    (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (plain-tex-mode texinfo-mode ams-tex-mode)
+      :help "Run plain TeX")
+     ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil
+      (latex-mode doctex-mode)
+      :help "Run LaTeX")
+     ("Makeinfo" "makeinfo %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with Info output")
+     ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with HTML output")
+     ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (ams-tex-mode)
+      :help "Run AMSTeX")
+     ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt once")
+     ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt until completion")
+     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+     ("View" "open -a /Applications/Skim.app %s.pdf" TeX-run-discard-or-function t t :help "Run Viewer")
+     ("Print" "%p" TeX-run-command t t :help "Print the file")
+     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command)
+     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
+     ("Check" "lacheck %s" TeX-run-compile nil
+      (latex-mode)
+      :help "Check LaTeX file for correctness")
+     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document")
+     ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files")
+     ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files")
+     ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
+ '(custom-safe-themes
+   (quote
+    ("0e7da2c7c64fb5d4764250ffa4b8b33c0946577108d1d6444f1020d0dabba784" default)))
  '(sentence-end-double-space nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

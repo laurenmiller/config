@@ -7,9 +7,8 @@
 ########## Variables
 
 dir=~/configs                    # dotfiles directory
-olddir=~/sonfigs_old             # old dotfiles backup directory
-files=".bashrc .emacs"    # list of files/folders to symlink in homedir
-
+files=".bash_profile .emacs .gitignore_global"    # list of files/folders to symlink in homedir
+olddir=~/configs_old             # old dotfiles backup directory
 ##########
 
 # create dotfiles_old in homedir
@@ -25,7 +24,7 @@ echo "...done"
 # move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks 
 for file in $files; do
     echo "Moving any existing dotfiles from ~ to $olddir"
-    mv ~/$file ~/dotfiles_old/
+    mv ~/$file ~/configs_old/
     echo "Creating symlink to $file in home directory."
     ln -s $dir/$file ~/$file
 done
