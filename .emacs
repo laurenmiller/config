@@ -86,29 +86,31 @@ use-dialog-box nil)
 ;; Turn on window saving mode for restoring window configs:
 (winner-mode 1)
 
-
 ;; Set Smooth Scrolling
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-
-;; Enable mouse support
 
 ;;a minor tweak to the frame title, so it prints
 ;the path
 (when window-system
   (setq frame-title-format '(buffer-file-name "%f" ("%b"))))
 
-; tell emacs not to as for yes
+; don't type out full words for yes or now
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;get normal apple key bindings to work
- ;(require 'redo)
- ;(require 'mac-key-mode)
-  ;(mac-key-mode 1)
+;undo/redo 
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+;;reset key bindings
+(defalias 'redo 'undo-tree-redo)
+(global-set-key (kbd "C-z") 'undo) ; 【Ctrl+z】
+(global-set-key (kbd "C-S-z") 'redo) ; 【Ctrl+Shift+z】;  Mac style
 
-  ;; follow symlinks and don't ask
+;; follow symlinks and don't ask
 (setq  vc-follow-symlinks t)
 
+;key minding to toggle full screen 
+(global-set-key (kbd "M-RET") 'toggle-frame-maximized)
 ;;other keybindings
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -246,6 +248,11 @@ use-dialog-box nil)
 (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
 
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
+
+
+
+
+;(setq 'case-fold-search t)
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
