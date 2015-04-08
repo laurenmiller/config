@@ -15,3 +15,8 @@ set show-all-if-ambiguous on
 if [ -f /opt/local/etc/bash_completion ]; then
     . /opt/local/etc/bash_completion
 fi
+
+## --- emacs ---
+alias emacs=“/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs”
+# start a windowed frame
+alias ec ='/Applications/MacPorts/Emacs.app/Contents/MacOS/bin/emacsclient -n -c -a /Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs'

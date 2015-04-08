@@ -1,8 +1,3 @@
-
-
-
-
-
 ;; ;; ====================================================================
 ;; ;; Emacs Configuration File
 ;; ;;
@@ -16,16 +11,14 @@
 ;; =================================================================
 
 ;;set default directory
-                                        ;(setq default-directory "/Users/lauren/Dropbox/Programming/Emacs")
+;(setq default-directory "/Users/lauren/Dropbox/Programming/Emacs")
 
 (setq debug-on-error t)
 
 ;; Add to path
 (push "~/.emacs.d/lisp" load-path)
-(push "~/.emacs.d/elpa" load-path)
 
-
-                                        ;(add-to-list 'exec-path "/usr/local/bin")
+;(add-to-list 'exec-path "/usr/local/bin")
 
 ;; Read in PATH from .profile
 (if (not (getenv "TERM_PROGRAM"))
@@ -35,6 +28,7 @@
 (setenv "PATH" (concat "/opt/local/var:" (getenv "PATH")))
 (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
 (setq exec-path (append exec-path '("/usr/local/bin")))
+
 ;;==================================================================
 ;; GUI Emacs config (make things work nicely)
 ;; =================================================================
@@ -44,7 +38,7 @@
  make-backup-files nil
 ;; Turn off splash screen
 ;; Turn off the message in the scratch buffer
- ;; set default mode to org-mode inhibit-splash-screen t
+;; set default mode to org-mode inhibit-splash-screen t
  initial-scratch-message nil
  initial-major-mode 'org-mode)
 
@@ -99,8 +93,8 @@ use-dialog-box nil)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;undo/redo 
-(require 'undo-tree)
-(global-undo-tree-mode 1)
+;(require 'undo-tree)
+;(global-undo-tree-mode 1)
 ;;reset key bindings
 (defalias 'redo 'undo-tree-redo)
 (global-set-key (kbd "C-z") 'undo) ; 【Ctrl+z】
@@ -121,11 +115,12 @@ use-dialog-box nil)
 
 ;; Add marmalade functionality:
 (require 'package)
+(package-initialize)
+
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-
-(package-initialize)
+(add-to-list 'package-archives '("elpy" . "http://jorgenschaefer.github.io/packages/") t)
 
 ;;add interactively do things
 (require 'ido)
@@ -152,7 +147,7 @@ use-dialog-box nil)
 
                                         ;to enable autopair in all buffers
                                         ;This makes sure that brace structures (), [], {}, etc. are closed as soon as the opening character is typed.
-(require 'autopair) (autopair-global-mode)
+;(require 'autopair) (autopair-global-mode)
 
                                         ;Turn on auto complete.
 (require 'auto-complete-config)
@@ -172,7 +167,7 @@ use-dialog-box nil)
 ;;  Set window defaults
 (setq default-frame-alist
       '((top . 0) (left . 50)
-        (width . 80) (height . 74)
+        (width . 80) (height . 65)
                                         ;(cursor-color . "black")
         (cursor-type . box)
         ))
@@ -228,11 +223,26 @@ use-dialog-box nil)
 ;; =================================================================
 ;; make sure that PYTHONPATH environment variable is set correctly
 (setenv "PYTHONPATH" "/opt/local/bin/python")
+;(prepend-path "~/.emacs.d/emacs-env/bin")
 
-                                        ;(package-initialize)
+
+					;the default keyboard shortcuts
+(autoload 'jedi:setup "jedi" nil t)
+
+(setq jedi:setup-keys t)                      ; optional
+;when you type some object or module name and a “.” it gives you all the possible attributes/submodules/methods/etc
+(setq jedi:complete-on-dot t)                 ; optional
+
+
+;(package-initialize)
 (elpy-enable)
 (elpy-use-ipython)
-                                        ;permanently prefer jedi for auto completion (rope still installed for refactoring support)
+; setup JEDI			
+(add-hook 'python-mode-hook 'jedi:setup)
+
+;(elpy-clean-modeline)
+
+;permanently prefer jedi for auto completion (rope still installed for refactoring support)
 (setq elpy-rpc-backend "jedi")
 
 
@@ -249,10 +259,7 @@ use-dialog-box nil)
 
 (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
 
-
-
-
-;(setq 'case-fold-search t)
+;(setq 'case-fold-sarch t)
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -274,7 +281,8 @@ use-dialog-box nil)
 
 ;;Minor Mode
 (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
-
+;; LaTeX-math-mode http://www.gnu.org/s/auctex/manual/auctex/Mathematics.html
+(add-hook 'TeX-mode-hook 'LaTeX-math-mode)
 
 ; Outline-minor-mode key map
  (define-prefix-command 'cm-map nil "Outline-")
@@ -318,6 +326,13 @@ use-dialog-box nil)
 ;;                     (TeX-fold-paragraph)))))
 ;; 	      t t)))
 
+;;use latexmk to compile my LaTeX documents 
+(add-hook 'LaTeX-mode-hook (lambda ()
+  (push
+    '("latexmk" "latexmk -pdf %s" TeX-run-TeX nil t
+      :help "Run latexmk on file")
+    TeX-command-list)))
+(add-hook 'LaTeX-mode-hook '(lambda () (setq TeX-command-default "latexmk")))
 
 
 (add-hook 'LaTeX-mode-hook
