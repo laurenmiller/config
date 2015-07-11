@@ -20,6 +20,9 @@
 *.blg
 *.out
 *.pdf
+*.el
+*.fdb_latexmk
+*.fls
 
 # Images #
 ###################

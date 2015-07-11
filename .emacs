@@ -167,7 +167,7 @@ use-dialog-box nil)
 ;;  Set window defaults
 (setq default-frame-alist
       '((top . 0) (left . 50)
-        (width . 80) (height . 65)
+        (width . 80) (height . 60)
                                         ;(cursor-color . "black")
         (cursor-type . box)
         ))
@@ -175,9 +175,12 @@ use-dialog-box nil)
 
 ;; fonts
 
-(set-face-attribute 'default nil :height 120)
-(set-face-attribute 'default nil :font "Monaco")
-
+;(set-face-attribute 'default nil :height 120)
+;(set-face-attribute 'default nil :font "Monaco")
+(set-face-attribute 'default nil
+                    :font "Consolas"
+		    :height 125
+		    :weight 'normal)
 ;(load-theme 'wombat t)
 ;(load-theme 'charcoal  t)
 ;(require 'color-theme)
@@ -421,7 +424,7 @@ use-dialog-box nil)
      ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
  '(custom-safe-themes
    (quote
-    ("0e7da2c7c64fb5d4764250ffa4b8b33c0946577108d1d6444f1020d0dabba784" default)))
+("0e7da2c7c64fb5d4764250ffa4b8b33c0946577108d1d6444f1020d0dabba784" default)))
  '(sentence-end-double-space nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -429,3 +432,4 @@ use-dialog-box nil)
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+				    
