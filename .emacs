@@ -177,10 +177,10 @@ use-dialog-box nil)
 
 ;(set-face-attribute 'default nil :height 120)
 ;(set-face-attribute 'default nil :font "Monaco")
-(set-face-attribute 'default nil
-                    :font "Consolas"
-		    :height 125
-		    :weight 'normal)
+;(set-face-attribute 'default nil
+;                    :font "Consolas"
+;		    :height 125
+;		    :weight 'normal)
 ;(load-theme 'wombat t)
 ;(load-theme 'charcoal  t)
 ;(require 'color-theme)
@@ -188,10 +188,8 @@ use-dialog-box nil)
 ;(color-theme-charcoal)
 
 ;; Please set your themes directory to 'custom-theme-load-path
-(add-to-list 'custom-theme-load-path
-             (file-name-as-directory "~/.emacs.d/themes/monokai-theme-20141106.2250"))
 
-(load-theme 'monokai t t)
+(load-theme 'monokai t)
 (enable-theme 'monokai)
 
 ;; load your favorite theme
@@ -220,6 +218,21 @@ use-dialog-box nil)
 (global-set-key (kbd "C-x M-t") 'cleanup-region)
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
+;; =================================================================
+;; c++ Functionalixsty
+;; =================================================================
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (if (derived-mode-p 'c-mode 'c++-mode)
+                (cppcm-reload-all)
+              )))
+;; OPTIONAL, somebody reported that they can use this package with Fortran
+(add-hook 'c90-mode-hook (lambda () (cppcm-reload-all)))
+;; OPTIONAL, avoid typing full path when starting gdb
+(global-set-key (kbd "C-c C-g")
+ '(lambda ()(interactive) (gud-gdb (concat "gdb --fullname " (cppcm-get-exe-path-current-buffer)))))
+;; OPTIONAL, some users need specify extra flags forwarded to compiler
+(setq cppcm-extra-preprocss-flags-from-user '("-I/usr/src/linux/include" "-DNDEBUG"))
 
 ;; =================================================================
 ;; Python Functionalixsty
